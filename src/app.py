@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from datetime import datetime, timezone
 
-BASE = Path("/content/BaanDee_Project/BaanDee_Class1_Student")
+BASE = Path(__file__).resolve().parent.parent
 DATA_FILE = BASE / "data/cleaned/branch_product_readiness.csv"
 OVERRIDE_FILE = BASE / "data/cleaned/manual_stock_notes.csv"
 
