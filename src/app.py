@@ -91,32 +91,70 @@ if len(branch_df):
         "สถานะคำนวณตามกฎที่แสดงด้านบน"
     )
 
+
     st.subheader("บันทึกหมายเหตุสำหรับผู้ตรวจสอบ")
     note_text = st.text_area(
         "หมายเหตุ (บันทึกแยก ไม่แก้ยอดสต็อกต้นฉบับ)",
         key="review_note"
     )
+
     if st.button("บันทึกหมายเหตุ"):
-        new_note = pd.DataFrame([{
-            "branch_id": branch,
-            "product_id": selected_id,
-            "note": note_text,
-            "created_at": datetime.now(timezone.utc).isoformat()
-        }])
-        updated = pd.concat([notes, new_note], ignore_index=True)
-        updated.to_csv(OVERRIDE_FILE, index=False)
-        st.success("บันทึกหมายเหตุแล้ว โดยเก็บแยกจากข้อมูลสต็อกต้นฉบับ")
-        st.rerun()
+        if not note_text.strip():
+            st.warning("กรุณากรอกหมายเหตุก่อนบันทึก")
+        else:
+            new_note = pd.DataFrame([{
+                "branch_id": branch,
+                "product_id": selected_id,
+                "note": note_text.strip(),
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }])
+            updated = pd.concat([notes, new_note], ignore_index=True)
+            updated.to_csv(OVERRIDE_FILE, index=False)
+            st.success("บันทึกหมายเหตุแล้ว")
+            st.rerun()
 
     st.subheader("ประวัติหมายเหตุ")
-    if len(notes):
+    matching_notes = notes[
+        (notes["branch_id"] == branch)
+        & (notes["product_id"] == selected_id)
+    ]
+
+    if len(matching_notes):
         st.dataframe(
-            notes[
-                (notes["branch_id"] == branch)
-                & (notes["product_id"] == selected_id)
-            ],
+            matching_notes,
             use_container_width=True,
             hide_index=True
         )
+
+        note_indices = matching_notes.index.tolist()
+        selected_note_idx = st.selectbox(
+            "เลือกหมายเหตุเดิมที่ต้องการแก้ไข",
+            options=note_indices,
+            format_func=lambda idx: (
+                f"{notes.loc[idx, 'created_at']} — "
+                f"{str(notes.loc[idx, 'note'])[:80]}"
+            ),
+            key="edit_note_choice"
+        )
+
+        edited_text = st.text_area(
+            "แก้ไขข้อความหมายเหตุ",
+            value=str(notes.loc[selected_note_idx, "note"]),
+            key="edit_note_text"
+        )
+
+        if st.button("บันทึกการแก้ไข"):
+            if not edited_text.strip():
+                st.warning("หมายเหตุห้ามเป็นข้อความว่าง")
+            else:
+                notes.loc[selected_note_idx, "note"] = edited_text.strip()
+                if "updated_at" not in notes.columns:
+                    notes["updated_at"] = ""
+                notes.loc[
+                    selected_note_idx, "updated_at"
+                ] = datetime.now(timezone.utc).isoformat()
+                notes.to_csv(OVERRIDE_FILE, index=False)
+                st.success("แก้ไขหมายเหตุเดิมแล้ว")
+                st.rerun()
     else:
-        st.write("ยังไม่มีหมายเหตุสำหรับสินค้า")
+        st.write("ยังไม่มีหมายเหตุสำหรับสินค้านี้")
