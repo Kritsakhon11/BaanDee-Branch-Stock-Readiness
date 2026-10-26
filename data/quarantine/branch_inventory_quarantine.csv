@@ -1,0 +1,4 @@
+branch_id,branch_name,product_id,available_qty,reorder_level,as_of,source_type
+BKK-01,Bangkok,SKU-0001,-5,7,2026-10-26T08:00:00+07:00,SYNTHETIC_DEMO
+BKK-01,Bangkok,SKU-0002,20,5,,SYNTHETIC_DEMO
+BKK-01,Bangkok,SKU-0003,13,8,2026-10-26T08:00:00+07:00,SYNTHETIC_DEMO

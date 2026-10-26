@@ -1,0 +1,5 @@
+record,field,raw,clean,method
+customer:cus00842,customer_id,cus00842,CUS-00842,known ID format
+ticket:TKT-260731-042,order_reference,OD1842,ORD-260728-1842,approved source crosswalk
+products:category,category,kitchen,kitchen,trim and lowercase
+products:category,category,Bed room,bedding,explicit category map

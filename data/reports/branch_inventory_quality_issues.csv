@@ -1,0 +1,4 @@
+row_index,problem,action
+0,invalid_or_negative_quantity,quarantine_for_human_review
+1,missing_or_invalid_as_of,quarantine_for_human_review
+328,duplicate_branch_product,quarantine_duplicate_keep_first

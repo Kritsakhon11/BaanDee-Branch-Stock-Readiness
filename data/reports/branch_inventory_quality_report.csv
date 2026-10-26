@@ -1,0 +1,9 @@
+metric,value
+raw_rows,329
+clean_rows,326
+quarantined_rows,3
+unique_branches_in_clean,4
+unique_products_in_clean,82
+remaining_duplicate_keys,0
+remaining_negative_qty,0
+remaining_missing_as_of,0
